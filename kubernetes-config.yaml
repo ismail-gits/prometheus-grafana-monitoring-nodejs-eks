@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp
+  labels:
+    app: nodeapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodeapp
+  template:
+    metadata:
+      labels:
+        app: nodeapp
+    spec:
+      imagePullSecrets:
+        - name: docker-registry-secret-key
+      containers:
+        - name: nodeapp
+          image: ismailsdockers/java-maven-app:nodeapp-lts
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodeapp
+  labels:
+    app: nodeapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: nodeapp
+  ports:
+    - name: nodeapp-service
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+
